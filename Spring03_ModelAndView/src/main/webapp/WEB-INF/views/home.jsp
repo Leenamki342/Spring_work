@@ -18,6 +18,9 @@
 		<li><a href="test/study.jsp">공부하기(DispatcherServlet 을 거치지 않음)</a></li>
 		<li><a href="friend/list.do">친구 목록</a></li>
 		<li><a href="friend/list2.do">친구목록 2</a></li>
+		<li><a href="${pageContext.request.contextPath }/friend/list3.do">친구목록 3</a></li>
+		<li><a href="friend/delete.do?num=1">1번 친구 삭제</a></li>
+		<li><a href="friend/delete.do?num=2">2번 친구 삭제</a></li>
 	</ul>
 	<h2>공지사항</h2>
 	<ul>
