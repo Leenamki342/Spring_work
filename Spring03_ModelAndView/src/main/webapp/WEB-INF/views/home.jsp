@@ -16,6 +16,8 @@
 		<!-- .do를 사용하지 않았기 때문에 DispatcherServlet을 거치지 않음 -->
 		<li><a href="test/play.html">놀러가기(DispatcherServlet 을 거치지 않음)</a></li>
 		<li><a href="test/study.jsp">공부하기(DispatcherServlet 을 거치지 않음)</a></li>
+		<li><a href="friend/list.do">친구 목록</a></li>
+		<li><a href="friend/list2.do">친구목록 2</a></li>
 	</ul>
 	<h2>공지사항</h2>
 	<ul>
