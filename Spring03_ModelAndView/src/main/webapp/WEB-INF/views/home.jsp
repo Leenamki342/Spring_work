@@ -21,6 +21,7 @@
 		<li><a href="${pageContext.request.contextPath }/friend/list3.do">친구목록 3</a></li>
 		<li><a href="friend/delete.do?num=1">1번 친구 삭제</a></li>
 		<li><a href="friend/delete.do?num=2">2번 친구 삭제</a></li>
+		<li><a href="friend/insertform.do">친구 추가</a></li>
 	</ul>
 	<h2>공지사항</h2>
 	<ul>

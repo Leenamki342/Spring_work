@@ -6,8 +6,13 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.gura.spring03.friend.dto.FriendDto;
 
 @Controller
 public class FriendController {
@@ -50,6 +55,7 @@ public class FriendController {
 		return mView;
 	}
 	// 메소드의 인자로 ModelAndView 를 선언하면 Spring 이 객체를 생성해서 전달해 준다.
+	// GET 방식 전송확인
 	@RequestMapping("/friend/list3")
 	public ModelAndView list3(ModelAndView mView) {
 		// view page 에 전달할 Model(data)
@@ -62,6 +68,7 @@ public class FriendController {
 		mView.setViewName("friend/list");
 		return mView;
 	}
+	// 리다일렉트 이동 확인
 	@RequestMapping("/friend/delete")
 	public String delete(HttpServletRequest request) {
 		// 삭제할 번호
@@ -80,4 +87,57 @@ public class FriendController {
 		// 친구 목록 보기로 리다일렉트 이동시키기
 		return "redirect:/friend/list.do";
 	}
+	// 친구 추가 폼 요청 처리
+	@RequestMapping("/friend/insertform")
+	public String insertform() {
+		// 수행할 비즈니스 로직은 없고 단순히 view page 정보만 리턴하는 경우도 있다.
+		return "friend/insertform";
+	}
+	// 친구 추가 요청 처리
+	@RequestMapping("/friend/insert")
+	public String insert(HttpServletRequest request) {
+		//  폼 전송되는 파라미터 추출
+		int num=Integer.parseInt(request.getParameter("num"));
+		String name=request.getParameter("name");
+		String phone=request.getParameter("phone");
+		// 추출된 정보 테스트로 출력
+		System.out.println(num+"|"+name+"|"+phone);
+		// view page 로 forward 이동해서 결과 응답
+		return "friend/insert";
+	}
+	/*
+	 * "num" 이라는 파라미터 명으로 전달되는 파라미터 => @RequestParam int num
+	 * "name" 이라는 파라미터 명으로 전달되는 파라미터 => @RequestParam String name
+	 * "phone" 이라는 파라미터 명으로 전달되는 파라미터 => @RequestParam String phone
+	 */
+	@RequestMapping("/friend/insert2")
+	public String insert(@RequestParam int num, 
+			@RequestParam String name, @RequestParam String phone) {
+		// 추출된 정보 테스트로 출력
+		System.out.println(num+"|"+name+"|"+phone);
+		return "friend/insert";
+	}
+	/*
+	 *  컨트롤러의 메소드에 dto 를 인자로 받게 선언해 놓으면
+	 *  요청 파라미터가 자동 추출되어서 dto 에 저장되어서 전달된다.
+	 *  "num" 이라는 파라미터명으로 전달되는 파라미터 => dto 의 num 이라는 필드에 저장
+	 *  "name" 이라는 파라미터명으로 전달되는 파라미터 => dto 의 namem 이라는 필드에 저장
+	 *  "phone" 이라는 파라미터명으로 전달되는 파라미터 => dto 의 phone 이라는 필드에 저장
+	 */
+	@RequestMapping("/friend/insert3")
+	public String insert(@ModelAttribute FriendDto dto) {
+		/*
+		 *  아래의 작업을 Spring 프레임워크가 해준다.
+		 *  int num=Integer.parseInt(request.getParameter("num"));
+		 *  String name=request.getParameter("name");
+		 *  String phone=request.getParameter("phone");
+		 *  FriendDto dto=new FriendDto();
+		 *  dto.setNum(num);
+		 *  dto.setName(name);
+		 *  dto.setPhone(phone);
+		 */
+		System.out.println(dto.getNum()+"|"+dto.getName()+"|"+dto.getPhone());
+		return "friend/insert";
+	}
+	
 }
