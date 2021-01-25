@@ -1,4 +1,4 @@
-package com.gura.spring01;
+package com.gura.spring02;
 
 import javax.servlet.http.HttpServletRequest;
 
