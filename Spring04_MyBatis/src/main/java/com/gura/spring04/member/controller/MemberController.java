@@ -4,26 +4,87 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.gura.spring04.member.dao.MemberDao;
 import com.gura.spring04.member.dto.MemberDto;
+import com.gura.spring04.member.service.MemberService;
 
 @Controller
 public class MemberController {
-	// MemberDao 인터페이스 type 을 주입(DI) 받아서 사용한다.
+	// 핵심 의존객체 주입받기
 	@Autowired
-	private MemberDao dao;
+	private MemberService service;
 	
 	@RequestMapping("/member/list")
 	public ModelAndView list(ModelAndView mView) {
-		// 회원 목록을 얻어온다.
-		List<MemberDto> list=dao.getList();
-		// 회원목록을 request scope 에 담고 view page 로 forward 이동해서 응답
-		mView.addObject("list", list);
+		// MemberService 의 메소드를 호출하면서 ModelAndView 객체의 참조값을 전달
+		// "list" 라는 키값으로 회원목록이 담기도록 한다.
+		service.getMemberList(mView);
 		mView.setViewName("member/list");
 		// /WEB-INF/views/member/list.jsp
+		return mView;
+	}
+	
+	// 회원 추가 폼 요청 처리
+	@RequestMapping("/member/insertform")
+	public String insertform() {
+		// 요청 처리할 비즈니스 로직은 없다.
+		
+		// view page 의 위치만 리턴해주면 된다.
+		return "member/insertform";
+	}
+	
+	// 회원 추가 요청 처리
+	@RequestMapping("/member/insert")
+	public ModelAndView insert(@ModelAttribute MemberDto dto,
+			ModelAndView mView) { // @ModelAttribute 는 생략가능
+		// MemberService 객체를 이용해서 회원정보를 추가
+		service.addMember(dto);
+		mView.setViewName("member/insert");
+		// 리턴해준다.
+		return mView;
+	}
+	
+	// 회원정보를 삭제하는 메소드
+	@RequestMapping("/member/delete")
+	public ModelAndView delete(@RequestParam int num,
+			ModelAndView mView) {
+		// 회원정보를 삭제하는 비즈니스 로직 수행
+		service.deleteMember(num);
+		// 목록보기 리다일렉트 이동 (delete 창을 띄우지 않고 바로 목록으로 이동)
+		mView.setViewName("redirect:/member/list.do");
+		return mView;
+	}
+	
+	// 회원정보 수정폼 요청 처리
+	@RequestMapping("/member/updateform")
+	public ModelAndView updateform(@RequestParam int num,
+			ModelAndView mView) {
+		// 수정할 회원의 정보를 얻어오는 비즈니스 로직 수행
+		service.getMember(num, mView);
+		// view page 로 forward 이동해서 응답
+		mView.setViewName("member/updateform");
+		return mView;
+	}
+	
+	// 회원정보 수정 요청 처리
+	/*
+	 *  Dto 에 @ModelAttribute("key 값") 을 선언하면
+	 *  해당 객체가 "key 값" 으로 자동으로 request scope 에 담긴다.
+	 *  
+	 *  @ModelAttribute("dto") 이게 
+	 *  mView.addObject("dto",dto);를 생략가능하게 한다.
+	 */
+	@RequestMapping("/member/update")
+	public ModelAndView update(@ModelAttribute("dto") MemberDto dto,
+			 ModelAndView mView) { 
+		// 회원정보를 수정반영하는 비즈니스 로직 수행
+		service.updateMember(dto);
+		mView.setViewName("member/update");
 		return mView;
 	}
 }

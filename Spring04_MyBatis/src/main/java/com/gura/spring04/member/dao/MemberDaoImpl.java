@@ -6,6 +6,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.gura.spring04.exception.DBFailException;
 import com.gura.spring04.member.dto.MemberDto;
 // component scan 을 통해서 bean 이 되도록 어노테이션을 붙여 준다.
 // Dao 에는 @Repository 라는 어노테이션을 붙여야한다.
@@ -22,7 +23,14 @@ public class MemberDaoImpl implements MemberDao{
 	
 	@Override
 	public List<MemberDto> getList() {
-		// 이게 끝
+		/*
+		 *  Mapper.xml 문서의 namespace => member
+		 *  sql의 id => getList
+		 *  parameterType => 없음
+		 *  resultType => MemberDto
+		 */
+		
+		// .selectList() 를 호출했을때 resultType 이 곧 List 의 Generic type 이 됩니다.
 		List<MemberDto> list=session.selectList("member.getList");
 		return list;
 	}
@@ -56,7 +64,12 @@ public class MemberDaoImpl implements MemberDao{
 		 *  sql의 id => delete
 		 *  parameterType => int
 		 */
-		session.delete("member.delete", num);
+		// 삭제된 row 의 갯수가 리턴된다.
+		int count=session.delete("member.delete", num);
+		// 만약 삭제 실패하면
+		if(count==0) {
+			throw new DBFailException("삭제 실패 했습니다.(삭제할 회원정보가 없습니다.)");
+		}
 	}
 
 	@Override
