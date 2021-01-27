@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="users">
-	<!-- 여기서 resultType 은 UsersDaoImpl 에서 returnType 이다. -->
-	<!-- 그리고 parameterType 은  -->
 	<update id="updateProfile" parameterType="usersDto">
-		UPDATE USERS
+		UPDATE users
 		SET profile=#{profile}
 		WHERE id=#{id}
 	</update>
-	<select id="isExist" resultType="usersDto" parameterType="String">
-		SELECT *
-		FROM users
-		WHERE id=#{id}
-	</select>
 	<update id="updatePwd" parameterType="usersDto">
 		UPDATE users
 		SET pwd=#{newPwd}
@@ -27,21 +20,26 @@
 		DELETE FROM users
 		WHERE id=#{id}
 	</delete>
-	<select id="getData" resultType="usersDto" parameterType="String">
+	<select id="getData" parameterType="String" resultType="usersDto">
 		SELECT pwd,email,profile,
 			TO_CHAR(regdate, 'YY.MM.DD HH24:MI') AS regdate
 		FROM users
 		WHERE id=#{id}
-	</select>
-	<select id="isValid" resultType="usersDto" parameterType="usersDto">
-		SELECT id
-		FROM users
-		WHERE id=#{id} AND pwd=#{pwd}
 	</select>
 	<insert id="insert" parameterType="usersDto">
 		INSERT INTO users
 		(id, pwd, email, regdate)
 		VALUES(#{id}, #{pwd}, #{email}, SYSDATE)
 	</insert>
-	
+	<select id="isExist" parameterType="String" resultType="usersDto">
+		SELECT *
+		FROM users
+		WHERE id=#{id}
+	</select>
+	<select id="isValid" parameterType="usersDto" resultType="String">
+		SELECT id
+		FROM users
+		WHERE id=#{id} AND pwd=#{pwd}
+	</select>
 </mapper>
+
