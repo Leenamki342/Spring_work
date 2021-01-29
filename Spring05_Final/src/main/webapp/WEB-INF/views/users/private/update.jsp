@@ -8,7 +8,8 @@
 </head>
 <body>
 <script>
-	
+	alert("수정완료!");
+	location.href="${pageContext.request.contextPath }/users/private/info.do";
 </script>	
 </body>
 </html>

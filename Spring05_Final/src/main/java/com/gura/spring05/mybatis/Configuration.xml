@@ -7,10 +7,13 @@
 	<typeAliases>
 		<typeAlias type="com.gura.spring05.users.dto.UsersDto"
 			alias="usersDto"/>
+		<typeAlias type="com.gura.spring05.cafe.dto.CafeDto"
+			alias="cafeDto"/>
 	</typeAliases>
 
 	<!-- 사용할 Mapper xml 이 어디에 있는지 명시해야 한다. -->
 	<mappers>
 		<mapper resource="com/gura/spring05/mybatis/UsersMapper.xml"/>
+		<mapper resource="com/gura/spring05/mybatis/CafeMapper.xml"/>
 	</mappers>
 </configuration>
