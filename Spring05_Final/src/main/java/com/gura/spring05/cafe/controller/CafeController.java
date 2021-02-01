@@ -20,15 +20,15 @@ public class CafeController {
 	@Autowired
 	private CafeService service;
 	
-	// 새 댓글 저장 요청처리
-	@RequestMapping(value = "/cafe/private/comment_insert",
+	//새 댓글 저장 요청 처리
+	@RequestMapping(value = "/cafe/private/comment_insert", 
 			method = RequestMethod.POST)
 	public String commentInsert(HttpServletRequest request,
 			@RequestParam int ref_group) {
-		// 새 댓글을 저장하고
+		//새 댓글을 저장하고
 		service.saveComment(request);
-		// 글 자세히 보기로 다시 리다일렉트 이동시킨다.
-		// ref_group 은 자세히 보기 했던 글번호
+		//글 자세히 보기로 다시 리다일렉트 이동 시킨다.
+		//ref_group 은 자세히 보기 했던 글번호 
 		return "redirect:/cafe/detail.do?num="+ref_group;
 	}
 	

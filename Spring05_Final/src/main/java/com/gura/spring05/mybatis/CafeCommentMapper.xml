@@ -27,7 +27,7 @@
 		WHERE num=#{num}
 	</update>
 	<select id="getSequence" resultType="int">
-		SELECT board_cafe_comment_seq.NEXVAL 
-		FROM DAUL
+		SELECT board_cafe_comment_seq.NEXTVAL 
+		FROM DUAL
 	</select>
 </mapper>

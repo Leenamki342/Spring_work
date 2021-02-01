@@ -71,7 +71,7 @@ public class CafeDaoImpl implements CafeDao{
 	}
 
 	@Override
-	public CafeDto getDate(int num) {
+	public CafeDto getData(int num) {
 		CafeDto dto=session.selectOne("cafe.getData", num);
 		return dto;
 	}
