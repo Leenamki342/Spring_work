@@ -11,3 +11,9 @@ CREATE TABLE board_cafe_comment(
 );
 -- 댓글의 글번호를 얻어낼 시퀀스
 CREATE SEQUENCE board_cafe_comment_seq;
+
+-- 570 번 글에대한 셀렉트문
+SELECT num, writer, target_id, comment_group
+FROM board_cafe_comment
+WHERE ref_group=570
+ORDER BY comment_group ASC, num ASC;
