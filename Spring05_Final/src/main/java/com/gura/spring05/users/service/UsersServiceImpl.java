@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
@@ -25,6 +27,13 @@ public class UsersServiceImpl implements UsersService{
 	
 	@Override
 	public void addUser(UsersDto dto) {
+		// 비밀번호를 암호화할 객체 생성
+		BCryptPasswordEncoder encoder=new BCryptPasswordEncoder();
+		// 입력한 비밀번호를 암호화 한다.
+		String encodedPwd=encoder.encode(dto.getPwd());
+		// UsersDto 에 다시 넣어준다.
+		dto.setPwd(encodedPwd);
+		
 		dao.insert(dto);
 		
 	}
@@ -73,8 +82,7 @@ public class UsersServiceImpl implements UsersService{
 	}
 
 	@Override
-	public void loginLogic(HttpServletRequest request, 
-			HttpServletResponse response) {
+	public void loginLogic(HttpServletRequest request, HttpServletResponse response) {
 		//로그인후 가야하는 목적지 정보
 		String url=request.getParameter("url");
 		//로그인 실패를 대비해서 목적지 정보를 인코딩한 결과도 준비 한다.
@@ -82,14 +90,20 @@ public class UsersServiceImpl implements UsersService{
 		//1. 폼전송되는 아이디와 비밀번호를 읽어온다.
 		String id=request.getParameter("id");
 		String pwd=request.getParameter("pwd");
-		UsersDto dto=new UsersDto();
-		dto.setId(id);
-		dto.setPwd(pwd);
-		//2. DB 에 실제로 존재하는 (유효한) 정보인지 확인한다.
-		boolean isValid=dao.isValid(dto);
+		//유효한 정보인지 여부를 담을 지역 변수를 만들고 초기값 false 지정 
+		boolean isValid=false;
+		
+		//2. 아이디를 이용해서 암호화된 비밀번호를 SELECT 한다.
+		String savedPwd=dao.getPwd(id);
+		//3. 비밀번호가 만일 null 이 아니면 (존재하는 아이디)
+		if(savedPwd != null) {
+			//4. 폼전송되는 비밀번호와 일치하는지 확인한다.
+			isValid=BCrypt.checkpw(pwd, savedPwd);
+		}
+		
 		//3. 유효한 정보이면 로그인 처리를 하고 응답 그렇지 않으면 아이디혹은 비밀번호가 틀렸다고 응답
 		if(isValid) {
-			// HttpSession(로그인 처리할때 필요한것) 객체를 이용해서 로그인 처리를 한다.
+			//HttpSession 객체를 이용해서 로그인 처리를 한다. 
 			request.getSession().setAttribute("id", id);
 		}
 		//체크박스를 체크 하지 않았으면 null 이다. 
@@ -114,10 +128,10 @@ public class UsersServiceImpl implements UsersService{
 			pwdCook.setMaxAge(60*60*24);
 			response.addCookie(pwdCook);
 		}
-		// view page 에서 필요한 데이터를 request 에 담고
+		//view page 에서 필요한 데이터를 request 에 담고
 		request.setAttribute("encodedUrl", encodedUrl);
 		request.setAttribute("url", url);
-		request.setAttribute("isValid", isValid);
+		request.setAttribute("isValid", isValid);		
 	}
 
 	@Override
